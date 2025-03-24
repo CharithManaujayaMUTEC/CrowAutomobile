@@ -77,6 +77,10 @@
                                     <br>
                                     <span style="font-size: 0.8em; font-weight: bold;">({{ $item->warranty_type }} Warranty)</span>
                                 @endif
+                                @if(!empty($item->notes))
+                                    <br>
+                                    <span style="font-size: 0.8em;"><strong>Note:</strong> {{ $item->notes }}</span>
+                                @endif
                             </td>
                             <td style="width:20%; text-align: right; font-size: 11px;">{{ number_format($item->price, 2) }}</td>
                             <td style="width:10%; text-align: center; font-size: 11px;">{{ $item->quantity }}</td>
@@ -106,6 +110,10 @@
                                     <br>
                                     <span style="font-size: 0.8em; font-weight: bold;">({{ $item->warranty_type }} Warranty)</span>
                                 @endif
+                                @if(!empty($item->notes))
+                                    <br>
+                                    <span style="font-size: 0.8em;"><strong>Note:</strong> {{ $item->notes }}</span>
+                                @endif
                             </td>
                             <td style="width:20%; text-align: right; font-size: 11px;">{{ number_format($item->price, 2) }}</td>
                             <td style="width:10%; text-align: center; font-size: 11px;"></td>
@@ -126,9 +134,9 @@
     @endif
 
     <div style="text-align: left; margin-top: 14px; margin-left: 40px; margin-right: 40px; padding: 2px; line-height: 0.5;">
-        @if(!empty($item->notes)) <!-- Check if notes are present -->
-            <p style="font-weight: bold; font-size: 12px;">Special Notes:</p>
-            <p style="font-size: 9px;">{{ $item->notes }}</p>
+        @if(!empty($invoice->comment)) <!-- Check if notes are present -->
+            <p style="font-weight: bold; font-size: 12px;">Comment:</p>
+            <p style="font-size: 9px;">{{ $invoice->comment }}</p>
         @endif
     </div>
 

@@ -11920,13 +11920,8 @@
         }
     ],
     "aliases": [],
-<<<<<<< HEAD
-    "minimum-stability": "dev",
-    "stability-flags": {},
-=======
     "minimum-stability": "stable",
     "stability-flags": [],
->>>>>>> 65ed0792dec7312bb64c63aa89b87de825ebdeb3
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

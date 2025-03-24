@@ -20,7 +20,8 @@ class Invoice extends Model
         'credit_balance',
         'payment_status',
         'invoice_date',
-        
+        'comment',
+
     ];
 
 

@@ -260,7 +260,11 @@ class InvoiceResource extends Resource
                     })->columnSpanFull()->collapsible()
                     ->itemLabel(fn (array $state): ?string => $state['description'] ?? null),
 
-
+                Forms\Components\TextInput::make('comment')
+                    ->label('Comment')
+                    ->placeholder('Enter any comment')
+                    ->reactive()
+                    ->columnSpanFull(),
 
                 Forms\Components\TextInput::make('amount')
                     ->numeric()
