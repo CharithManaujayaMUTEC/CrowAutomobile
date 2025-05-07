@@ -24,7 +24,7 @@ class ExpensesResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('expense_category')->required()->relationship('expense_categories', 'name')->searchable(),
+            Forms\Components\Select::make('expense_category_id')->required()->relationship('expenseCategories', 'name')->searchable(),
             Forms\Components\TextInput::make('name')->required(), 
             Forms\Components\TextInput::make('description')->required(), 
             Forms\Components\TextInput::make('date')->required()
