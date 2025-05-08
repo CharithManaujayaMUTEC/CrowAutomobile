@@ -32,8 +32,10 @@
         <div class="right">
             @if($invoice->is_invoice)
                 <p><strong>Invoice No:</strong> {{ $invoice->id }}</p>
-            @else
-            <p><strong>Quatation No:</strong> {{ $invoice->id }}</p>
+            @elseif($invoice->is_quatation)
+                <p><strong>Quatation No:</strong> {{ $invoice->id }}</p>
+            @elseif($invoice->is_dummy)
+                <p><strong>Invoice No:</strong> {{ $invoice->id }}</p>
             @endif
             <p>{{ $invoice->created_at->format('F j, Y') }}</p>
         </div>
@@ -127,9 +129,11 @@
 
     @if($showGrandTotal)
         <p class="total">Grand Total:  Rs.{{ number_format($invoice->amount, 2) }}</p>
-        <p class="paid">Paid Amount:  Rs.{{ number_format($totalPaid, 2) }}</p>
-        @if($invoice->credit_balance > 0) <!-- Check if credit balance is greater than 0 -->
-            <p class="topay">To Pay:  Rs.{{ number_format($invoice->credit_balance, 2) }}</p>
+        @if(!$invoice->is_dummy)
+            <p class="paid">Paid Amount:  Rs.{{ number_format($totalPaid, 2) }}</p>
+            @if($invoice->credit_balance > 0) <!-- Check if credit balance is greater than 0 -->
+                <p class="topay">To Pay:  Rs.{{ number_format($invoice->credit_balance, 2) }}</p>
+            @endif
         @endif
     @endif
 

@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filamemt\Resources\InvoiceResource\Widgets\TodayIncomeWidget\TodayIncomeWidget;
+use App\Filament\Resources\PaymentResource\Widgets\TotalRecievableMoneyWidget;
 use App\Filament\Resources\VehicleResource\Widgets\TodayRegisteredVehiclesWidget\TodayRegisteredVehiclesWidget;
 use App\Models\BatteryPack;
 use Filament\Http\Middleware\Authenticate;
@@ -50,8 +51,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 TodayIncomeWidget::class,
                 TodayRegisteredVehiclesWidget::class,
-              
-
+                TotalRecievableMoneyWidget::class
             ])
             ->middleware([
                 EncryptCookies::class,

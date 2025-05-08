@@ -24,17 +24,21 @@ class ExpensesResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('expense_category')->required()->relationship('expense_categories', 'name')->searchable(),
-            Forms\Components\TextInput::make('name')->required(), 
-            Forms\Components\TextInput::make('description')->required(), 
-            Forms\Components\TextInput::make('date')->required()
+            Forms\Components\Select::make('expense_category_id')->label('Expense Category')->searchable()->required()->relationship('expenseCategory', 'name'),
+            Forms\Components\TextInput::make('name')->label('Name')->required(),
+            Forms\Components\TextInput::make('description')->label('Description'),
+            Forms\Components\TextInput::make('expense_date')->label('Date')->default(now())->required()
         ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([Tables\Columns\TextColumn::make('name')->sortable()->searchable(), Tables\Columns\TextColumn::make('description')->sortable()->searchable(), Tables\Columns\TextColumn::make('date')->sortable()->searchable(), Tables\Columns\TextColumn::make('expense_category')->sortable()->searchable()])
+            ->columns([
+                Tables\Columns\TextColumn::make('name')->label('Name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('description')->label('Description')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('expense_date')->label('Date')->sortable()->searchable(),
+                ])
             ->filters([
                 //
             ])

@@ -30,7 +30,7 @@ class ItemsResource extends Resource
                 'ml' => 'mililiters',
                 'pcs' => 'pcs',
                 'pair' => 'pair',
-                ])->required(),
+                ])->searchable()->required(),
             Forms\Components\TextInput::make('qty')->required(),
             Forms\Components\TextInput::make('comment'),
         ]);

@@ -28,6 +28,7 @@ class CustomerResource extends Resource
             ->schema([
                 Forms\Components\Select::make('title')
                     ->label('Title')
+                    ->searchable()
                     ->options([
                         'Mr.' => 'Mr. (Mister)',
                         'Mrs.' => 'Mrs. (Mistress, married woman)',

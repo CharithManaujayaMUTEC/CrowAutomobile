@@ -9,10 +9,10 @@ class Expenses extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['expense_category', 'name', 'description', 'date'];
+    protected $fillable = ['expense_category_id', 'name', 'description', 'expense_date'];
 
     //expense categories relationship
-    public function expenseCategories()
+    public function expenseCategory()
     {
         return $this->belongsTo(ExpenseCategories::class);
     }

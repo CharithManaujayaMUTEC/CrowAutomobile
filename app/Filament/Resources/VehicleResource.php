@@ -31,6 +31,7 @@ class VehicleResource extends Resource
                 Forms\Components\Select::make('brand_id')
                     ->relationship('brand', 'brand_name')
                     ->required()
+                    ->searchable()
                     ->createOptionForm(function () {
                         return [
                             Forms\Components\TextInput::make('brand_name')->label('Brand Name')->required(),

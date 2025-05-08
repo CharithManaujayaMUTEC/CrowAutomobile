@@ -37,6 +37,7 @@ class PaymentResource extends Resource
                         Select::make('invoice_id')
                             ->label('Invoice ID')
                             ->relationship('invoice', 'id')
+                            ->searchable()
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set) {
@@ -61,6 +62,7 @@ class PaymentResource extends Resource
 
                         Select::make('payment_method')
                             ->label('Payment Method')
+                            ->searchable()
                             ->options([
                                 'credit_card' => 'Credit Card',
                                 'bank_transfer' => 'Bank Transfer',
