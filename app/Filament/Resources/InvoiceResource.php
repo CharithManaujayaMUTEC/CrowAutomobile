@@ -302,6 +302,7 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('Invoice ID')
                     ->sortable()
+                    ->searchable()
                     ->formatStateUsing(function ($state, $record) {
                         if ($record->is_dummy) {
                             return $state . ' <span style="color: black; background-color: yellow; padding: 2px 5px; border-radius: 5px;">Dummy Invoice</span>'; // Display badge for dummy invoices
@@ -316,16 +317,18 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Customer')
                     ->sortable()
-                    ->searchable()
+                    ->searchable() // Make this column searchable
                     ->formatStateUsing(function ($state, $record) {
                         return $record->customer->title . ' ' . $state; // Assuming customer relationship is loaded
                     }),
                 Tables\Columns\TextColumn::make('vehicle.number')
                     ->label('Vehicle No.')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(), // Make this column searchable
                 Tables\Columns\TextColumn::make('model')
                     ->label('Model')
                     ->sortable()
+                    ->searchable() // Make this column searchable
                     ->formatStateUsing(function ($state, $record) {
                         // Access the related vehicle and concatenate brand and model
                         $vehicle = $record->vehicle; // Eager load the vehicle relationship
@@ -334,13 +337,15 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('mileage')
                     ->label('Mileage')
                     ->sortable()
+                    ->searchable() // Make this column searchable
                     ->formatStateUsing(function ($state, $record) {
                         // Assuming 'is_km' is a boolean field in the Invoice model
                         return $state . ' ' . ($record->is_km ? 'KM' : 'Miles');
                     }),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Total Amount')
-                    ->sortable(), // Format as currency
+                    ->sortable()
+                    ->searchable(), // Make this column searchable
                 Tables\Columns\TextColumn::make('payment_status')
                     ->label('Status')
                     ->badge()
@@ -349,10 +354,12 @@ class InvoiceResource extends Resource
                         'Paid' => 'success',
                         'unpaid' => 'danger',
                     })
+                    ->searchable() // Make this column searchable
                     ->sortable(), // Format as currency
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')
                     ->dateTime()
+                    ->searchable() // Make this column searchable
                     ->sortable(), // Concatenate item details
             ])
             ->actions([
@@ -361,8 +368,10 @@ class InvoiceResource extends Resource
                     ->url(fn(Invoice $record) => route('invoices.pdf', $record->id))
                     ->icon('heroicon-o-printer')
                     ->label('')
-            ]);
+            ])
+            ->searchable(); // Specify searchable columns
     }
+
 
     public static function getPages(): array
     {
