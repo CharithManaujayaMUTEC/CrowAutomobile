@@ -330,9 +330,8 @@ class InvoiceResource extends Resource
                     ->sortable()
                     ->searchable() // Make this column searchable
                     ->formatStateUsing(function ($state, $record) {
-                        // Access the related vehicle and concatenate brand and model
-                        $vehicle = $record->vehicle; // Eager load the vehicle relationship
-                        return $vehicle ? "{$vehicle->brand->brand_name} {$state}" : 'N/A'; // Return 'brand model' or 'N/A' if no vehicle
+                        $brandName = $record->vehicle?->brand?->brand_name;
+                        return $brandName ? "{$brandName} {$state}":'N/A';
                     }),
                 Tables\Columns\TextColumn::make('mileage')
                     ->label('Mileage')
