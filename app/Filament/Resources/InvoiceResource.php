@@ -40,7 +40,6 @@ class InvoiceResource extends Resource
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {
                                 $set('is_quatation', false);
-                                $set('is_dummy', false);
                             }
                         }),
                     Forms\Components\Checkbox::make('is_quatation')
@@ -48,23 +47,12 @@ class InvoiceResource extends Resource
                         ->reactive()
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {
-                                $set('is_invoice', false);
-                                $set('is_dummy', false);
-                            }
-                        }),
-                    Forms\Components\Checkbox::make('is_dummy')
-                        ->label('Dummy Invoice')
-                        ->reactive()
-                        ->afterStateUpdated(function ($state, callable $set) {
-                            if ($state) {
-                                $set('is_invoice', false);
-                                $set('is_quatation', false);
+                                $set('is_invoice', false); // Uncheck service if item is checked
                             }
                         }),
                 ])
                     ->label('Invoice Type')
-                    ->columnSpanFull()
-                    ->columns(3),
+                    ->columns(2),
 
                 Forms\Components\Select::make('customer_id')
                     ->label('Customer')
@@ -85,7 +73,6 @@ class InvoiceResource extends Resource
                     })
                     ->required()
                     ->reactive()
-                    ->searchable()
                     ->afterStateUpdated(function ($state, callable $set) {
                         // Load vehicle details when a vehicle is selected
                         $vehicle = Vehicle::find($state);
@@ -254,7 +241,7 @@ class InvoiceResource extends Resource
                             ->reactive()
                             ->required(fn($get) => $get('warranty_available')) // Required if warranty is available
                             ->disabled(fn($get) => !$get('warranty_available')), // Disable if warranty is not available
-
+                            
                                     /*Note Adding Section */
 
                                     Forms\Components\TextInput::make('notes')
@@ -273,11 +260,7 @@ class InvoiceResource extends Resource
                     })->columnSpanFull()->collapsible()
                     ->itemLabel(fn (array $state): ?string => $state['description'] ?? null),
 
-                Forms\Components\TextInput::make('comment')
-                    ->label('Comment')
-                    ->placeholder('Enter any comment')
-                    ->reactive()
-                    ->columnSpanFull(),
+
 
                 Forms\Components\TextInput::make('amount')
                     ->numeric()
@@ -302,49 +285,37 @@ class InvoiceResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('Invoice ID')
                     ->sortable()
-                    ->searchable()
                     ->formatStateUsing(function ($state, $record) {
-                        if ($record->is_dummy) {
-                            return $state . ' <span style="color: black; background-color: yellow; padding: 2px 5px; border-radius: 5px;">Dummy Invoice</span>'; // Display badge for dummy invoices
-                        } elseif ($record->is_invoice) {
-                            return $state . ' - Invoice'; // Display as Invoice
-                        } elseif ($record->is_quatation) {
-                            return $state . ' - Quotation'; // Display as Quotation
-                        }
-                        return $state; // Fallback
-                    })
-                    ->html(),
+                        // Assuming 'is_km' is a boolean field in the Invoice model
+                        return $state . ' - ' . ($record->is_invoice ? 'Invoice' : 'Quatation');
+                    }),
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Customer')
                     ->sortable()
-                    ->searchable() // Make this column searchable
+                    ->searchable()
                     ->formatStateUsing(function ($state, $record) {
                         return $record->customer->title . ' ' . $state; // Assuming customer relationship is loaded
                     }),
                 Tables\Columns\TextColumn::make('vehicle.number')
                     ->label('Vehicle No.')
-                    ->sortable()
-                    ->searchable(), // Make this column searchable
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('model')
                     ->label('Model')
                     ->sortable()
-                    ->searchable() // Make this column searchable
                     ->formatStateUsing(function ($state, $record) {
-                        $brandName = $record->vehicle?->brand?->brand_name;
+                        $brandName = $record->vehicle?->brand;
                         return $brandName ? "{$brandName} {$state}":'N/A';
                     }),
                 Tables\Columns\TextColumn::make('mileage')
                     ->label('Mileage')
                     ->sortable()
-                    ->searchable() // Make this column searchable
                     ->formatStateUsing(function ($state, $record) {
                         // Assuming 'is_km' is a boolean field in the Invoice model
                         return $state . ' ' . ($record->is_km ? 'KM' : 'Miles');
                     }),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Total Amount')
-                    ->sortable()
-                    ->searchable(), // Make this column searchable
+                    ->sortable(), // Format as currency
                 Tables\Columns\TextColumn::make('payment_status')
                     ->label('Status')
                     ->badge()
@@ -353,24 +324,16 @@ class InvoiceResource extends Resource
                         'Paid' => 'success',
                         'unpaid' => 'danger',
                     })
-                    ->searchable() // Make this column searchable
                     ->sortable(), // Format as currency
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date Created')
                     ->dateTime()
-                    ->searchable() // Make this column searchable
                     ->sortable(), // Concatenate item details
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('Download PDF')
-                    ->url(fn(Invoice $record) => route('invoices.pdf', $record->id))
-                    ->icon('heroicon-o-printer')
-                    ->label('')
-            ])
-            ->searchable(); // Specify searchable columns
+                Tables\Actions\EditAction::make()
+            ]);
     }
-
 
     public static function getPages(): array
     {

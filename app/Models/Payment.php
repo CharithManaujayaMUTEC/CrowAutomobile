@@ -101,10 +101,10 @@ class Payment extends Model
                    "Paid Amount: LKR $paidAmount\n" .
                    "Credit Balance: LKR $creditBalance\n" .
                    "Please complete the credit balance within 14 working days.\n" .
-                   "Thank you for choosing JME.";
+                   "Thank you for choosing AAA Auto Care.";
 
         $to = $phone;  // Formatted phone number
-        $sender_id = "JME Garage";
+        $sender_id = "AAA Auto Care";
 
         try {
             $api_instance->sendSMS(
@@ -126,12 +126,12 @@ class Payment extends Model
         $user_id = env('NOTIFYLK_USER_ID');  // Use environment variable for user ID
         $api_key = env('NOTIFYLK_API_KEY');  // Use environment variable for API key
 
-        $message = "Your payment of LKR $amount for the invoice $invoiceId at JME Garage has been received successfully.\n" .
+        $message = "Your payment of LKR $amount for the invoice $invoiceId at AAA Auto Care has been received successfully.\n" .
                    "Thank you for choosing us!\n" .
                    "Reference ID: $paymentId";
 
         $to = $phone;  // Formatted phone number
-        $sender_id = "JME Garage";
+        $sender_id = "AAA Auto Care";
 
         try {
             $api_instance->sendSMS(

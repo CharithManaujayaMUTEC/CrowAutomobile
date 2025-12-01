@@ -37,7 +37,6 @@ class PaymentResource extends Resource
                         Select::make('invoice_id')
                             ->label('Invoice ID')
                             ->relationship('invoice', 'id')
-                            ->searchable()
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set) {
@@ -51,7 +50,7 @@ class PaymentResource extends Resource
                                     $currentDate = now()->format('Ymd'); // Format: YYYYMMDD
 
                                     // Generate the reference number
-                                    $referenceNumber = 'JME' . $currentDate . $invoice->id; // Concatenate JME, current date, and invoice ID
+                                    $referenceNumber = 'AAA' . $currentDate . $invoice->id; // Concatenate AAA, current date, and invoice ID
                                     $set('reference_number', $referenceNumber); // Set the reference number
                                 } else {
                                     $set('amount', null);
@@ -62,7 +61,6 @@ class PaymentResource extends Resource
 
                         Select::make('payment_method')
                             ->label('Payment Method')
-                            ->searchable()
                             ->options([
                                 'credit_card' => 'Credit Card',
                                 'bank_transfer' => 'Bank Transfer',
@@ -118,7 +116,7 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('invoice_id')->label('Invoice')->sortable()->searchable(),
+                TextColumn::make('invoice_id')->label('Invoice')->sortable(),
                 TextColumn::make('invoice.amount')->label('Total')->sortable(),
                 TextColumn::make('amount_paid')->label('Amount Paid')->sortable(),
                 TextColumn::make('payment_date')->label('Payment Date')->sortable(),

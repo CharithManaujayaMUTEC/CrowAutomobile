@@ -1,12 +1,14 @@
 html,
 body {
-    height: 100%; /* Ensure the body takes the full height of the viewport */
-    margin: 0; /* Remove default margin */
+    height: 100%;
+    /* Ensure the body takes the full height of the viewport */
+    margin: 0;
+    /* Remove default margin */
 }
 
 body {
     font-family: "Open Sans", sans-serif;
-    background-image: url("../images/bg.png");
+    background-image: url("");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -45,7 +47,7 @@ body {
     font-family: Arial, sans-serif;
     font-size: 30px;
     font-weight: bold;
-    color: white;
+    color: black;
     right: 30px;
     position: fixed;
     text-align: right;
@@ -55,7 +57,7 @@ body {
     font-family: Arial, sans-serif;
     font-size: 13px;
     font-weight: bold;
-    color: white;
+    color: black;
     top: 70px;
     right: 60px;
     position: fixed;
@@ -109,44 +111,20 @@ th {
 }
 
 .total {
-    margin-top: 0;
+    margin-top: 20px;
     margin-left: 40px;
     margin-right: 40px;
-    padding: 5px;
+    padding: 8px;
     background-color: #ddd;
     color: black;
-    font-size: 13px;
-    font-weight: bold;
-    text-align: right;
-}
-
-.paid {
-    margin-top: 0;
-    margin-left: 40px;
-    margin-right: 40px;
-    padding: 5px;
-    background-color: #4CAF50;
-    color: black;
-    font-size: 13px;
-    font-weight: bold;
-    text-align: right;
-}
-
-.topay {
-    margin-top: 0;
-    margin-left: 40px;
-    margin-right: 40px;
-    padding: 5px;
-    background-color: #cf0a0a;
-    color: black;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: bold;
     text-align: right;
 }
 
 .text1 {
     position: fixed;
-    top: 930px;
+    top: 910px;
     color: black;
     margin-left: 40px;
 }
@@ -174,13 +152,16 @@ th {
 }
 
 .float-container {
-    overflow: hidden; /* Clear floats */
-    color: white;
+    overflow: hidden;
+    /* Clear floats */
+    color: black;
     margin-left: 260px;
     margin-top: 100;
 }
 
 .float-item {
-    float: left; /* Float items to the left */
-    margin-right: 20px; /* Space between items */
+    float: left;
+    /* Float items to the left */
+    margin-right: 20px;
+    /* Space between items */
 }

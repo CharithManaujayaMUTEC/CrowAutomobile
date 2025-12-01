@@ -9,11 +9,11 @@ class Expenses extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['expense_category_id', 'name', 'description', 'expense_date'];
+    protected $fillable = ['expense_category_id', 'name', 'description', 'date'];
 
     //expense categories relationship
-    public function expenseCategory()
+    public function expenseCategories()
     {
-        return $this->belongsTo(ExpenseCategories::class);
+        return $this->belongsTo(ExpenseCategories::class, 'expense_category_id' );
     }
 }

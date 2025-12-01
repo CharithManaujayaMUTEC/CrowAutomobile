@@ -28,21 +28,13 @@ class VehicleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('number')->required(),
-                Forms\Components\Select::make('brand_id')
-                    ->relationship('brand', 'brand_name')
-                    ->required()
-                    ->searchable()
-                    ->createOptionForm(function () {
-                        return [
-                            Forms\Components\TextInput::make('brand_name')->label('Brand Name')->required(),
-                        ];
-                    })
-                    ->createOptionUsing(function (array $data) {
-                        $brand = \App\Models\Brand::create([
-                            'brand_name' => $data['brand_name'],
-                        ]);
-                        return $brand->id; // Return the brand ID
-                    }),
+                Forms\Components\Select::make('brand')->options([
+                    'Toyota' => 'Toyota',
+                    'Honda' => 'Honda',
+                    'Suzuki' => 'Suzuki',
+                    'Nissan' => 'Nissan',
+                    'Mitsubishi' => 'Mitsubishi'
+                ])->required(),
                 Forms\Components\TextInput::make('model')->required(),
                 Forms\Components\TextInput::make('milage')->required(),
                 Forms\Components\Select::make('customer_id')
@@ -57,7 +49,7 @@ class VehicleResource extends Resource
             ->columns([
                 Stack::make([
                     Tables\Columns\TextColumn::make('number')->sortable()->searchable()->weight(FontWeight::Bold)->icon('heroicon-s-identification')->alignCenter(),
-                    Tables\Columns\TextColumn::make('brand.brand_name')->label('Brand')->sortable()->searchable()->icon('heroicon-s-globe-alt')->alignLeft(),
+                    Tables\Columns\TextColumn::make('brand')->sortable()->searchable()->icon('heroicon-s-globe-alt')->alignLeft(),
                     Tables\Columns\TextColumn::make('model')->sortable()->searchable()->icon('heroicon-s-cog')->alignLeft(),
                     Tables\Columns\TextColumn::make('milage')->sortable()->searchable()->icon('heroicon-s-check-badge')->alignLeft(),
                     Tables\Columns\TextColumn::make('customer.name')->label('Customer')->sortable()->searchable()->icon('heroicon-s-user')->alignLeft(),

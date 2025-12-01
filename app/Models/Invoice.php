@@ -17,12 +17,10 @@ class Invoice extends Model
         'is_miles',
         'is_invoice',
         'is_quatation',
-        'is_dummy',
         'credit_balance',
         'payment_status',
         'invoice_date',
-        'comment',
-
+        
     ];
 
 

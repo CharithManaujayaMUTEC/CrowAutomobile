@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Filamemt\Resources\InvoiceResource\Widgets\TodayIncomeWidget\TodayIncomeWidget;
-use App\Filament\Resources\PaymentResource\Widgets\TotalRecievableMoneyWidget;
 use App\Filament\Resources\VehicleResource\Widgets\TodayRegisteredVehiclesWidget\TodayRegisteredVehiclesWidget;
 use App\Models\BatteryPack;
 use Filament\Http\Middleware\Authenticate;
@@ -36,9 +35,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandLogo(asset('images/logo1.png'))
+            ->brandLogo(asset(''))
             ->brandLogoHeight(fn() => Auth::check() ? '60px' : '110px')
-            ->favicon(asset('images/logo1.png'))
+            ->favicon(asset(''))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -51,7 +50,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 TodayIncomeWidget::class,
                 TodayRegisteredVehiclesWidget::class,
-                TotalRecievableMoneyWidget::class
+              
+
             ])
             ->middleware([
                 EncryptCookies::class,
