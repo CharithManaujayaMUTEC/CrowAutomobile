@@ -9,19 +9,18 @@
 </head>
 <body>
     <div class="header">
-        <img src="" alt="logo" class="logo">
+        <img src="images/logo.jpg" alt="logo" class="logo">
         <p class="inv">AAA Auto Care</p>
-        <p class="sub">Importers and dealers in New used Japanese motor spares body parts<br/>welding, panting & all necessities repairing vehicle repairs & Advertising</p>
         <div class="float-container">
-            <div class="float-item">
+            <div>
                 <img src="images/loc.png" alt="" class="icon">
                 <span class="p1">Ketethanna, Kahawatta</span>
             </div>
-            <div class="float-item">
+            <div>
                 <img src="images/email.png" alt="" class="icon">
                 <span class="p1">aaa.autocare123@gmail.com</span>
             </div>
-            <div class="float-item">
+            <div>
                 <img src="images/call.png" alt="" class="icon">
                 <span class="p1">0713634041</span>
             </div>
@@ -80,9 +79,15 @@
                 @endif
             @endforeach
 
+            @php
+                $hasServices = $invoiceItems->contains(fn($item) => $item->is_service);
+            @endphp
+
+            @if($hasServices)
             <tr>
                 <td colspan="5" style="text-align: left; font-weight: bold; font-size: 12px;">Services</td>
             </tr>
+            @endif
             @foreach($invoiceItems as $index => $item)
                 @if($item->is_service) <!-- Check if it's a service -->
                     <tr>
@@ -119,17 +124,5 @@
     <p style="font-weight: bold;">Special Notes:</p>
     <p>{{ $item->notes ?? 'N/A' }}</p>
 </div>
-
-
-    <div class="text1">
-        <p class="h1"><strong>AAA Auto Care</strong></p>
-        <p class="p1"><strong>Thank you for buisness with us!</strong></p>
-    </div>
-    <div class="text2">
-        <p class="p1"><strong>Term and Conditions :</strong></p>
-        <p class="p1">It is mandatory to bring the invoice given to you</p>
-        <p class="p1">for any Battery, ABS related services.</p>
-        <p class="p1">Physical damages are not covered under warranty.</p>
-    </div>
 </body>
 </html>
