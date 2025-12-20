@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ItemsResource\Pages;
-use App\Filament\Resources\ItemsResource\RelationManagers;
 use App\Models\Item;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ItemsResource extends Resource
 {
@@ -24,15 +21,30 @@ class ItemsResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('name')->required(),
-            Forms\Components\Select::make('unit')->options([
-                'l' => 'liters',
-                'ml' => 'mililiters',
-                'pcs' => 'pcs',
-                'pair' => 'pair',
-                ])->required(),
-            Forms\Components\TextInput::make('qty')->required(),
-            Forms\Components\TextInput::make('comment'),
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\Select::make('item_brand_id')
+                ->relationship('itemBrand', 'name')
+                ->searchable()
+                ->label('Brand'),
+
+            Forms\Components\Select::make('unit')
+                ->options([
+                    'l'    => 'Liters',
+                    'ml'   => 'Milliliters',
+                    'pcs'  => 'Pieces',
+                    'pair' => 'Pair',
+                ])
+                ->required(),
+
+            Forms\Components\TextInput::make('qty')
+                ->numeric()
+                ->required(),
+
+            Forms\Components\Textarea::make('comment')
+                ->columnSpanFull(),
         ]);
     }
 
@@ -40,15 +52,33 @@ class ItemsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('unit')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('qty')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('comment')->sortable()->searchable()])
-            ->filters([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('itemBrand.name')
+                    ->label('Brand')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('unit')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('qty')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('comment')
+                    ->limit(30),
             ])
-            ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make()])
-            ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getPages(): array

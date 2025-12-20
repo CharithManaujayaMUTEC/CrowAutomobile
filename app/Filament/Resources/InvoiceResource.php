@@ -16,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Dompdf\Dompdf;
 use App\Http\Controllers\InvoiceController;
 use App\Models\Customer;
+use App\Models\Item;
 use App\Models\Vehicle;
 use Filament\Actions\CreateAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -165,14 +166,25 @@ class InvoiceResource extends Resource
 
                             Forms\Components\Select::make('item_id')
                                 ->label('Item')
-                                ->options(function () {
-                                    return \App\Models\Item::pluck('name', 'id'); // Load items
-                                })
+                                ->options(
+                                Item::with('itemBrand')
+                                        ->get()
+                                        ->mapWithKeys(fn ($item) => [
+                                            $item->id => $item->name . ' — ' . optional($item->itemBrand)->name,
+                                        ])
+                                )
                                 ->reactive()
                                 ->searchable()
                                 ->createOptionForm(function () {
                                     return [
                                         Forms\Components\TextInput::make('name')->label('Item Name')->required(),
+                                        Forms\Components\Select::make('item_brand_id')
+                                        ->label('Brand')
+                                        ->required()
+                                        ->searchable()
+                                        ->options(
+                                            \App\Models\ItemBrand::pluck('name', 'id')->toArray()
+                                        ),
                                         Forms\Components\Select::make('unit')->options([
                                             'l' => 'Liters',
                                             'ml' => 'Milliliters',
@@ -186,6 +198,7 @@ class InvoiceResource extends Resource
                                 ->createOptionUsing(function (array $data) {
                                     $item = \App\Models\Item::create([
                                         'name' => $data['name'],
+                                        'item_brand_id' => $data['item_brand_id'],
                                         'unit' => $data['unit'],
                                         'qty' => $data['qty'],
                                         'comment' => $data['comment'] ?? null,

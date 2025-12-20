@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProcurementResource\Pages;
+use App\Models\Item;
 use App\Models\Procurement;
 use Filament\Forms;
 use Filament\Tables;
@@ -25,10 +26,15 @@ class ProcurementResource extends Resource
                 Select::make('name')
                     ->relationship('item', 'name')
                     ->searchable()
-                    ->required()
                     ->reactive()
                     ->label('Item Name')
-
+                    ->options(
+                    Item::with('itemBrand')
+                            ->get()
+                            ->mapWithKeys(fn ($item) => [
+                                $item->id => $item->name . ' — ' . optional($item->itemBrand)->name,
+                            ])
+                    )
                     ->afterStateUpdated(function ($state, callable $set) {
                         $item = \App\Models\Item::find($state);
 
@@ -86,6 +92,11 @@ class ProcurementResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label('Item Name'),
+
+                TextColumn::make('item.itemBrand.name')
+                    ->label('Brand')
+                    ->sortable()
+                    ->searchable(),
 
                 TextColumn::make('unitcost')
 

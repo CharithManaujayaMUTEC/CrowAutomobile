@@ -64,7 +64,7 @@
                     <tr>
                         <td style="width:10%; text-align: center; font-size: 11px;">{{ $index + 1 }}</td>
                         <td style="width:40%; text-align: left; font-size: 11px;">
-                            {{ $item->item->name ?? 'N/A' }}
+                            {{ $item->item->itemBrand->name }}-{{ $item->item->name ?? 'N/A' }}
                             @if($item->warranty_available)
                                 <br>
                                 <span style="font-size: 0.8em; font-weight: bold;">({{ $item->warranty_type }} Warranty)</span>

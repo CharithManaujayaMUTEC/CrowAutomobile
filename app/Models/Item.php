@@ -16,6 +16,7 @@ class Item extends Model
         'unit',
         'qty',
         'comment',
+        'item_brand_id'
     ];
 
     public function invoiceItems()
@@ -27,5 +28,10 @@ class Item extends Model
     public function procurement()
     {
         return $this->hasMany(Procurement::class);
+    }
+
+    public function itemBrand()
+    {
+        return $this->belongsTo(ItemBrand::class, 'item_brand_id');
     }
 }
