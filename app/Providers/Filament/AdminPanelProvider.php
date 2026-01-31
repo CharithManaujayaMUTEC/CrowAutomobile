@@ -59,7 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 \Hasnayeen\Themes\ThemesPlugin::make()
             )
             ->authMiddleware([
-                //Authenticate::class,
+                Authenticate::class,
             ])
             ->plugin(FilamentScaffoldPlugin::make());
     }

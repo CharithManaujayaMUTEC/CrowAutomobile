@@ -10,3 +10,7 @@ Route::get('/admin', function () {
     $panel = Filament::getPanel('admin');
     return $panel->getPages()[0]::make()->render();  // force render dashboard
 });
+
+Route::get('/test-alive', function () {
+    return 'Laravel is alive! Current time: ' . now()->toDateTimeString();
+});
