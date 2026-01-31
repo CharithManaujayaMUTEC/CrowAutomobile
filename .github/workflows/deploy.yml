@@ -2,7 +2,7 @@ name: Deploy CrowAutomobile to Hostinger Temp Domain
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
@@ -14,7 +14,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'  # change if your Hostinger is 8.2 or 8.4
+          php-version: "8.3" # confirm your version
           extensions: mbstring,bcmath,intl,pdo_mysql,gd,zip,curl,exif,pcntl,redis
 
       - name: Install Composer dependencies
@@ -23,21 +23,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
 
       - name: Install & build assets
         run: |
           npm ci
           npm run build
 
-      - name: Install sshpass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
+      # No sshpass needed anymore
 
-      - name: Deploy files with rsync
+      - name: Deploy files with rsync (using SSH key)
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
-            -e "ssh -p 65002 -o StrictHostKeyChecking=no" \
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 65002 147.93.78.59 >> ~/.ssh/known_hosts
+          rsync -avz --delete \
+            -e "ssh -p 65002 -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
             --exclude='.git' \
             --exclude='.github' \
             --exclude='node_modules' \
@@ -49,11 +54,18 @@ jobs:
             --exclude='storage/framework/views/*' \
             ./ u763117446@147.93.78.59:/home/u763117446/domains/lightslategrey-mandrill-987797.hostingersite.com/public_html/
 
-      - name: Run artisan commands on server
+      - name: Run artisan commands on server (using SSH key)
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -p 65002 -o StrictHostKeyChecking=no u763117446@147.93.78.59 << 'EOF'
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 65002 147.93.78.59 >> ~/.ssh/known_hosts
+          ssh -p 65002 -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no u763117446@147.93.78.59 << 'EOF'
             cd /home/u763117446/domains/lightslategrey-mandrill-987797.hostingersite.com/public_html/
 
+            # Composer on server
             /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-dev --optimize-autoloader --no-interaction || true
 
             /opt/alt/php83/usr/bin/php artisan optimize:clear
@@ -63,7 +75,4 @@ jobs:
             /opt/alt/php83/usr/bin/php artisan config:cache
             /opt/alt/php83/usr/bin/php artisan route:cache || true
             /opt/alt/php83/usr/bin/php artisan view:cache || true
-
-            # Optional: auto-migrate (be careful!)
-            # /opt/alt/php83/usr/bin/php artisan migrate --force --no-interaction
           EOF
