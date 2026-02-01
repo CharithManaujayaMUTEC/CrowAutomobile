@@ -6,6 +6,10 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
+            // Ensure assets URLs are relative to root
+            server: {
+                host: true,
+            },
         }),
     ],
 });
