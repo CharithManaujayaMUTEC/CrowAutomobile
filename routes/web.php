@@ -8,5 +8,4 @@ Route::get('invoices/{id}/pdf', [InvoiceController::class, 'generateInvoice'])->
 
 // Manual POST handler for Filament login (bypasses registration bug)
 Route::post('/admin/login', [Login::class, 'authenticate'])
-    ->name('filament.admin.auth.login')
     ->middleware(['web', 'guest:admin']);
