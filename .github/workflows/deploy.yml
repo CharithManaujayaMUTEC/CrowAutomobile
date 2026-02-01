@@ -53,36 +53,29 @@ jobs:
             --exclude='storage/framework/views/*' \
             ./ u763117446@147.93.78.59:/home/u763117446/domains/lightslategrey-mandrill-987797.hostingersite.com/public_html/
 
-      - name: Move public contents to root, fix paths & run artisan commands
+      - name: Run artisan commands on server (using SSH key)
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 65002 147.93.78.59 >> ~/.ssh/known_hosts
+
           ssh -p 65002 -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no u763117446@147.93.78.59 << 'EOF'
             cd /home/u763117446/domains/lightslategrey-mandrill-987797.hostingersite.com/public_html/
 
-            echo "Deployment started - $(date)"
+            # Composer on server
+            /opt/alt/php83/usr/bin/php /usr/local/bin/composer2 install --no-dev --optimize-autoloader --no-interaction || true
 
-            # Remove old symlink to avoid mv errors
-            rm -f public/storage 2>/dev/null || true
+            /opt/alt/php83/usr/bin/php artisan optimize:clear
 
-            # Move public contents to root
-            mv public/* ./ 2>/dev/null || true
-            mv public/.* ./ 2>/dev/null || true
+            /opt/alt/php83/usr/bin/php artisan storage:link --force || true
 
-            # Remove empty public dir
-            rmdir public/ 2>/dev/null || true
+            /opt/alt/php83/usr/bin/php artisan config:cache
+            /opt/alt/php83/usr/bin/php artisan route:cache || true
+            /opt/alt/php83/usr/bin/php artisan view:cache || true
 
-            # Fix index.php paths (remove ../)
-            sed -i 's|__DIR__.'/../vendor/autoload.php'|__DIR__.'/vendor/autoload.php'|' index.php || echo "sed failed on autoload"
-            sed -i 's|__DIR__.'/../bootstrap/app.php'|__DIR__.'/bootstrap/app.php'|' index.php || echo "sed failed on bootstrap"
-
-            # Run artisan commands
-            /opt/alt/php83/usr/bin/php artisan storage:link --force || echo "storage:link failed"
-            /opt/alt/php83/usr/bin/php artisan optimize:clear || echo "optimize:clear failed"
-            /opt/alt/php83/usr/bin/php artisan config:cache || echo "config:cache failed"
-            /opt/alt/php83/usr/bin/php artisan route:cache || echo "route:cache failed"
-            /opt/alt/php83/usr/bin/php artisan view:cache || echo "view:cache failed"
-            /opt/alt/php83/usr/bin/php artisan filament:assets --no-interaction || echo "filament:assets failed"
-
-            echo "Deployment finished - $(date)"
+            # Ensure Filament assets are published
+            /opt/alt/php83/usr/bin/php artisan filament:assets --no-interaction || true
           EOF
